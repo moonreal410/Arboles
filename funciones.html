@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+</head>
+<body>
+    <script>
+        class Lista{
+            constructor(){
+                this.primero=null;
+            }
+            agregar(nodo){
+                if(this.primero==null){
+                    this.primero=nodo;
+                }else{
+                    var temp = this.primero;
+                    while(temp.next!=null){      
+                        temp = temp.next;
+                    }
+                    temp.next=nodo;
+                    nodo.ant=temp;
+                }
+            }
+            mostrar(){
+                let temp = this.primero;
+                let res="";
+                while(temp.next != null){
+                    res+=temp.numero;
+                    temp = temp.next;
+                }
+                console.log(this.primero);
+                return res;
+
+            } 
+            creararbol(){
+                let temp = this.primero;
+                while(temp.next!=null){
+                    if(temp.numero=="*" || temp.numero == "/"){
+                        temp.izq=temp.ant;
+                        temp.der=temp.next;
+                        if(temp.ant.ant!=null)
+                        temp.ant.ant.next=temp;
+                        else
+                        this.primero=temp
+                        if(temp.next.next!=null)
+                        temp.next.next.ant=temp;
+                        temp.ant=temp.izq.ant;
+                        temp.next=temp.der.next;
+                    }
+                    temp=temp.next;
+                }
+                temp=this.primero;
+                while(temp.next!=null){
+                    if(temp.numero=="+" || temp.numero=="-"){
+                        temp.izq=temp.ant;
+                        temp.der=temp.next;
+                        if(temp.ant.ant!=null)
+                        temp.ant.ant.next=temp;
+                        else
+                        this.primero=temp
+                        if(temp.next.next!=null)
+                        temp.next.next.ant=temp;
+                        temp.ant=temp.izq.ant;
+                        temp.next=temp.der.next;
+                    }
+                    temp=temp.next;
+                }  
+            } 
+            creapost(nodo,array){
+                if(!nodo)return;
+                this.creapost(nodo.izq,array);
+                this.creapost(nodo.der,array);
+                array.push(nodo.numero);
+                return array;
+            }
+            creapre(nodo,array){
+                if(!nodo)return;
+                array.push(nodo.numero);
+                this.creapre(nodo.izq,array);
+                this.creapre(nodo.der,array);
+                return array;
+            }
+            leerpost(){
+                let array=[];
+                let numero=0;
+                array=this.creapost(this.primero,[]);
+                for(let i=0;i<=array.length;i++){
+                    if(array[i]=="*"||array[i]=="/"||array[i]=="+"||array[i]=="-"){
+                       if(array[i]=="*"){
+                        numero = parseFloat(array[i-2])*parseFloat(array[i-1]);
+                        array[i]=numero;
+                        array.splice(i-2,2);
+                        i=0;
+                       }
+                        if(array[i]=="/"){
+                         numero = parseFloat(array[i-2])/parseFloat(array[i-1]);
+                        array[i]=numero;
+                        array.splice(i-2,2);
+                        i=0;
+                        }
+                        if(array[i]=="+"){
+                            numero = parseFloat(array[i-2])+parseFloat(array[i-1]);
+                        array[i]=numero;
+                        array.splice(i-2,2);
+                        i=0;
+                        }
+                        if(array[i]=="-"){
+                            numero = parseFloat(array[i-2])-parseFloat(array[i-1]);
+                        array[i]=numero;
+                        array.splice(i-2,2);
+                        i=0;
+                        }
+                    }
+                }
+                return(array[0]);
+            }
+            leerpre(){
+                let array = this.creapre(this.primero,[]);
+                let numero = 0; 
+                for(let i = array.length;i>=0;i--){
+                    for(let i = array.length;i>=0;i--){
+                    if(array[i]=="*"){
+                        numero=parseInt(array[i+1])*parseInt(array[i+2]);
+                        array[i]=numero;
+                        array.splice(i+1,2);
+                        i=array.length;
+                    }
+                    if(array[i]=="/"){
+                         numero=parseInt(array[i+1])/parseInt(array[i+2]);
+                        array[i]=numero;
+                        array.splice(i+1,2);
+                        i=array.length;
+                    }
+                    if(array[i]=="+"){
+                         numero=parseInt(array[i+1])+parseInt(array[i+2]);
+                        array[i]=numero;
+                        array.splice(i+1,2);
+                        i=array.length;
+                    }
+                    if(array[i]=="-"){
+                         numero=parseInt(array[i+1])-parseInt(array[i+2]);
+                        array[i]=numero;
+                        array.splice(i+1,2);
+                        i=array.length;
+                    }
+                }
+                }
+                return(array[0]);
+            }
+        }
+        class Nodo {
+            constructor(numero){
+                this.numero=numero;
+                this.next=null;
+                this.ant=null;
+                this.izq=null;
+                this.der=null;
+            }
+        }
+        let operacion1 = "6-3+9-4*6/8-4*2*3/6";
+        let operacion = prompt('Dame una sentencia?');
+        console.log(operacion);
+        let listaa= new Lista();
+        let nodo = new Nodo();
+      for(let i=0;i<=operacion.length;i++){
+            nodo = new  Nodo(operacion[i]);
+            listaa.agregar(nodo);
+      }
+      listaa.creararbol();
+      console.log(listaa.mostrar());
+      console.log(listaa.creapre(listaa.primero,[]));
+      console.log(listaa.creapost(listaa.primero,[]));
+      console.log(listaa.leerpost());
+      console.log(listaa.leerpre());
+    </script>
+</body>
+</html>
